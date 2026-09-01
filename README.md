@@ -1,26 +1,21 @@
 # 🌾 PaddyBot
 
-### A Retrieval-Augmented Generation Assistant for Paddy (Rice) Cultivation
+## A Retrieval-Augmented Generation Assistant for Paddy Cultivation
 
-PaddyBot is an AI-powered assistant that aims to provide
-knowledge-grounded responses to questions pertaining to paddy (rice)
-cultivation.
+PaddyBot is an AI-powered agricultural assistant designed to provide knowledge-grounded answers to questions related to paddy (rice) cultivation.
 
-The system leverages Retrieval-Augmented Generation (RAG) to retrieve
-relevant information from a curated corpus of agricultural knowledge,
+The system uses Retrieval-Augmented Generation (RAG) to retrieve relevant information from a curated agricultural knowledge base and uses a locally running Large Language Model (LLM) to generate responses based on the retrieved context.
 
-and employs a locally run Large Language Model (LLM) for response
+PaddyBot provides a Streamlit-based conversational interface and also supports command-line interaction.
 
-generation.
-The application features a Streamlit-based conversational interface as well
-as command-line support.
 ---
+
 ## 📌 Overview
-Paddy (rice) farmers and agricultural practitioners often require
-information pertaining to a wide variety of topics related to rice
-cultivation such as: diseases, fertilizers, pests, irrigation and general
-cultivation practices.
-PaddyBot aims to address this pain point by combining:
+
+Paddy farmers and agricultural practitioners often need information covering multiple aspects of rice cultivation, including diseases, fertilizers, pests, irrigation, and general cultivation practices.
+
+PaddyBot addresses this problem by combining:
+
 - 📚 Agricultural knowledge documents
 - 🔎 Semantic document retrieval
 - 🧠 Transformer-based text embeddings
@@ -28,324 +23,563 @@ PaddyBot aims to address this pain point by combining:
 - 🤖 Local Large Language Model inference
 - 💬 Conversational interaction
 - 📄 Source and page-level references
-PaddyBot replaces the standard practice of a language model leveraging
-its in-context knowledge with the retrieval of the most relevant
-information from the agricultural knowledge base.
+
+Instead of relying only on the language model's internal knowledge, PaddyBot retrieves relevant information from the agricultural knowledge base before generating an answer.
+
 ---
+
 ## ✨ Features
+
 ### 🌾 Paddy Cultivation Assistance
-The PaddyBot application and API provides question-answering and
-general conversational capabilities around paddy cultivation, including:
+
+PaddyBot can answer questions related to:
+
 - Paddy diseases
 - Disease symptoms and management
-- Pests, fertilizers and nutrient management
-- Irrigation, cultivation and harvest-related practices
-- General agricultural practices
+- Pest management
+- Fertilizer recommendations
+- Nutrient management
+- Irrigation and water management
+- General cultivation practices
+- Harvesting and related agricultural practices
+
 ### 🔎 Retrieval-Augmented Generation
-The application retrieves relevant chunks of text from the
-agricultural knowledge base to provide context to the question being
-asked.
+
+The system retrieves relevant document chunks from the agricultural knowledge base and provides them as context to the language model.
+
 ### 🧠 Semantic Search
-Documents are converted to vector representations through the use of
-a Sentence-Transformers embedding model.
-The current implementation makes use of the following model:
+
+Documents are converted into vector representations using a Sentence-Transformers embedding model.
+
+The current application uses:
+
 `sentence-transformers/all-MiniLM-L6-v2`
+
 ### 🗄️ FAISS Vector Database
-The FAISS library provides vector similarity search capabilities for
-the embedded knowledge base chunks.
+
+FAISS is used for similarity search over the embedded knowledge-base chunks.
+
 ### 🤖 Local LLM
-The Ollama API provides locally run Large Language Models for the
-inference component of the PaddyBot application.
-This allows the generation component to be decoupled from a cloud-hosted
-LLM API.
+
+The application uses Ollama for locally running Large Language Models, allowing the generation component to operate without relying on a cloud-based LLM API.
+
 ### 💬 Conversational Interface
-The Streamlit interface is capable of:
-- Hosting a chat between user and PaddyBot
-- Storing conversation history
-- Displaying recent chats with titles
-- Clearing chat history
-- Providing suggested questions to the user
-- Displaying sources
+
+The Streamlit interface supports:
+
+- Chat-style interaction
+- Conversation history
+- Recent chat titles
+- Clear-chat functionality
+- Suggested agricultural questions
+- Source display
+
 ### 📄 Source Attribution
-The retrieved response provides the source document and page number for
-each piece of information used in generating the response.
+
+Retrieved responses can include the source document and page number, allowing users to trace the information used for generating an answer.
+
 ---
+
 # 🏗️ System Architecture
-The overall PaddyBot system can be summarized as:
-```text
-Agricultural Knowledge Base
-│
-▼
-PDF Document Loading
-│
-▼
-Text Splitting
-│
-▼
-Embedding Generation
-│
-▼
-FAISS Vector Store
-│
-│
-User Question
-│
-▼
-Semantic Retrieval
-│
-▼
-Relevant Documents
-│
-▼
-RAG Prompt
-│
-▼
-Local LLM via Ollama
-│
-▼
-Generated Answer
-│
-▼
-Streamlit UI
-```
 
-🔄 RAG Pipeline
+The overall PaddyBot pipeline follows:
 
-PaddyBot implements the following retrieval-augmented generation pipeline.
+    Agricultural Knowledge Base
+                │
+                ▼
+         PDF Document Loading
+                │
+                ▼
+           Text Splitting
+                │
+                ▼
+        Embedding Generation
+                │
+                ▼
+         FAISS Vector Store
+                │
+                │
+          User Question
+                │
+                ▼
+        Semantic Retrieval
+                │
+                ▼
+        Relevant Documents
+                │
+                ▼
+            RAG Prompt
+                │
+                ▼
+        Local LLM via Ollama
+                │
+                ▼
+         Generated Answer
+                │
+                ▼
+           Streamlit UI
 
-1. Document Loading
+---
 
-Agricultural PDFs are loaded into LangChain using the PDF document loader.
+# 🔄 RAG Pipeline
 
-The knowledge base covers topics such as:
+PaddyBot follows a retrieval-augmented generation pipeline consisting of the following stages.
 
-Rice cultivation
-Irrigation
-Diseases
-Fertilizers
-Nutrient management
-Pests
-Rice varieties
-Weed management
-Agricultural schemes
-2. Document Splitting
+## 1. Document Loading
 
-Loaded documents are split into smaller chunks using RecursiveCharacterTextSplitter.
+Agricultural PDF documents are loaded using LangChain's PDF document loading functionality.
 
-Document splitting allows the retrieval system to work with smaller, focused units of information that better match natural language queries.
+The knowledge base contains documents covering areas such as:
 
-3. Embedding Generation
+- Rice cultivation
+- Irrigation
+- Diseases
+- Fertilizers
+- Nutrient management
+- Pests
+- Rice varieties
+- Weed management
+- Agricultural schemes
 
-For each document chunk, an embedding (vector representation) is generated using the Sentence-Transformers model:
+---
 
-sentence-transformers/all-MiniLM-L6-v2
+## 2. Document Splitting
 
-4. FAISS Indexing
+The loaded documents are divided into smaller chunks using `RecursiveCharacterTextSplitter`.
 
-The resulting embeddings are stored in a vector database (FAISS).
+Chunking allows the retrieval system to identify smaller, relevant sections of documents rather than processing entire documents during each query.
 
-When a question is asked, it is encoded as an embedding and compared to the embeddings in the database to find relevant document chunks.
+---
 
-5. Similarity Retrieval
+## 3. Embedding Generation
 
-The most relevant document chunks are retrieved based on semantic similarity.
+Each document chunk is converted into a numerical vector using the Sentence-Transformers model:
 
-The application uses a TOP_K configuration parameter to set the maximum number of retrieved documents.
+`sentence-transformers/all-MiniLM-L6-v2`
 
-6. Context-Aware Generation
+These vectors represent the semantic meaning of the corresponding document chunks.
 
-The retrieved documents are used as context for answering the user question.
+---
 
-LangChain passes the context and user question to the RAG chain, which uses Ollama to interact with the LLM.
+## 4. FAISS Indexing
 
-7. Response Generation
+The generated embeddings are stored in a FAISS vector database.
 
-The final response is generated by the LLM, which uses the retrieved agricultural information as evidence for its answer.
+When a user submits a question, the question is converted into the same embedding space and compared against the stored document vectors.
 
-🧰 Technologies Used
-Component
-Technology
-Programming Language
+---
 
-Python
-User Interface
+## 5. Similarity Retrieval
 
-Streamlit
-RAG Framework
-LangChain
-Embeddings
-Sentence-Transformers
+PaddyBot retrieves the most relevant document chunks using semantic similarity.
 
-Embedding model
-all-MiniLM-L6-v2
-Vector Database
+The application's retriever uses the configured `TOP_K` value to determine the number of retrieved documents.
 
-FAISS
-LLM Runtime
-Ollama
-PDF Processing
-PyPDF
-Deep Learning
-PyTorch / Torchvision
-Alternative Vector DB
-Chroma
+---
 
-Evaluation
-Custom retrieval evaluation pipeline
-📂 Project Structure
-PaddyBot/
-│
-├── Backend/
-│  │
-│  ├── app.py
-│  ├── chatbot.py
-│  ├── chroma_db.py
-│  ├── config.py
-│  ├── embeddings.py
-│  ├── frontend_app.py
-│  ├── ingest.py
-│  ├── llm.py
-│  ├── loaders.py
-│  ├── prompt.py
-│  ├── requirements.txt
-│  ├── retriever.py
-│  ├── splitter.py
-│  └── vectordb.py
-│
-│  └── evaluation/
-│    ├── evaluator.py
-│    ├── metrics.py
-│    ├── questions.json
-│    ├── ground_truth.json
-│    ├── compare_models.py
-│    ├── create_pool.py
-│    ├── generate_results.py
-│    ├── pooled_annotation_final.csv
-│    ├── retrieval_results_manual.csv
-│    └── evaluation result CSV files
-│
-├── Knowledge_Basis/
-│
-├── Papers/
-│
-├── .gitignore
-└── README.md
-📊 Embedding Model Evaluation
-The project conducts an extensive comparison of the performance of various embedding models for the agricultural knowledge base.
-Evaluated models:
-1. sentence-transformers/all-MiniLM-L6-v2
-2. BAAI/bge-base-en-v1.5
-3. intfloat/e5-base-v2
-4. jinaai/jina-embeddings-v2-base-en
-The comparison uses the FAISS and Chroma vector databases to assess the retrieval performance of these models.
-🗄️ FAISS vs Chroma
-The project also compares the performance of two vector database systems:
-FAISS
-Chroma
-The comparison considers the retrieval performance of the embedding models listed above.
-The main application (PaddyBot) uses the FAISS vector database, while Chroma is used as an alternative in the evaluation component.
-🧪 Retrieval Evaluation
-The retrieval performance is evaluated using a benchmark of 100 agricultural questions.
-The questions are distributed across 5 categories:
-Category
-Questions
-General Cultivation
-20
-Disease Management
-20
-Pest Management
-20
-Nutrient Management
-20
-Irrigation and Water Management
-20
-Total
-100
-Using this benchmark, the evaluation pipeline measures the retrieval performance in terms of:
-Precision@K
-Recall@K
-Reciprocal Rank
-In addition, the time performance (latency) of the retrieval is measured using Python’s high-resolution timers.
-⏱️ Retrieval Time Evaluation
-The retrieval latency is measured for the benchmark questions.
-For each question, the time taken for the retrieval is measured individually, and then the average retrieval time is computed across the benchmark questions.
-The evaluation considers the impact of:
-Different embedding models
-FAISS vs. Chroma
-The time performance serves as an additional metric to assess the overall effectiveness of various combinations of embedding models and vector databases.
-🖥️ Running PaddyBot
-1. Clone the repo:
-git clone https://github.com/YOUR_USERNAME/PaddyBot.git
-cd PaddyBot
-Make sure to replace YOUR_USERNAME with your actual GitHub username.
-2. Create a virtual environment:
-Windows
-python -m venv venv
-Then activate the virtual environment:
-venv\Scripts\activate
-3. Install dependencies:
-pip install -r Backend/requirements.txt
-4. Install and run Ollama:
-Make sure to install Ollama and have the required local LLM available.
-The LLM configuration is set in the Backend/llm.py file.
-5. Prepare the knowledge base:
-Make sure to place the required PDF files in the relevant knowledge-base folders.
-The document loading pipeline looks for PDF files in the configured folder and loads them into the application.
-6. Build the vector database:
-Navigate to the Backend directory and run the following command:
-cd Backend
-python ingest.py
-7. Run the Streamlit app:
-From the Backend directory, run the following command:
-streamlit run frontend_app.py
-The app will open in your web browser.
-💬 Example Questions
-You can ask questions such as:
-What are the symptoms of blast disease?
-How often should I irrigate my paddy field?
-Which fertilizer is best during the tillering stage?
-How do I control brown planthopper?
-What are the major diseases affecting rice?
-📚 Knowledge Base
-The knowledge base consists of agricultural documents covering various topics related to rice cultivation.
-The documents fall under the following categories:
-Cultivation
-Diseases
-Fertilizers
-Irrigation
-Pests
-Rice Varieties
-Weed Management
-Government Agricultural Schemes
-The documents are split into chunks that are later embedded and stored in a vector database for efficient semantic search.
-🔬 Research Component
-The project includes a research component that studies the impact of various embedding models and vector databases on the performance of agricultural question answering.
-This component follows the following workflow:
-Embedding Model ➝ Vector Database ➝ Document Retrieval ➝ Retrieval Quality ➝ Retrieval Time
-The evaluation results are stored in the evaluation subdirectory and can be analyzed further to draw additional insights.
-📈 Results and Visualizations
-The repository can include the following research visualizations:
-architecture.png
-faiss_performance.png
-faiss_chroma_comparison.png
-These files show:
-PaddyBot’s overall architecture
-The performance of different embedding models using the FAISS vector database
-The comparison of performance between the FAISS and Chroma vector databases
-📄 Research Paper
-The project can be used as a foundation for a research paper on RAG-based agricultural question answering.
-The research component focuses on the following areas:
-Using RAG for knowledge-grounded question answering for paddy cultivation
-Semantic document retrieval
-Comparative analysis of embedding models
-Evaluation of vector databases
-🚀 Future Work
-The future work for this project may include:
-Making PaddyBot a publicly accessible agricultural assistant
-Expanding the knowledge base
-Supporting additional Indian crops and agricultural practices
-Comparing additional embedding models
-Exploring hybrid retrieval approaches
-Reducing response latency
-Adding more sophisticated agricultural features
-Deploying the solution on a production-grade cloud platform
+## 6. Context-Aware Generation
+
+The retrieved documents are passed to the RAG chain.
+
+LangChain combines the retrieved context with the user query and sends it to the configured LLM through Ollama.
+
+---
+
+## 7. Response Generation
+
+The LLM generates the final response using the retrieved agricultural information as contextual evidence.
+
+This approach helps ground the generated response in the supplied knowledge base.
+
+---
+
+# 🧰 Technologies Used
+
+| Component | Technology |
+|---|---|
+| Programming Language | Python |
+| User Interface | Streamlit |
+| RAG Framework | LangChain |
+| Embeddings | Sentence-Transformers |
+| Embedding Model | all-MiniLM-L6-v2 |
+| Vector Database | FAISS |
+| LLM Runtime | Ollama |
+| PDF Processing | PyPDF |
+| Deep Learning | PyTorch / Torchvision |
+| Alternative Vector Database | Chroma |
+| Evaluation | Custom Retrieval Evaluation Pipeline |
+
+---
+
+# 📦 Dependencies
+
+The main dependencies used by the project include:
+
+    streamlit
+    langchain
+    langchain-community
+    langchain-classic
+    langchain-text-splitters
+    langchain-huggingface
+    langchain-ollama
+    sentence-transformers
+    faiss-cpu
+    chromadb
+    pypdf
+    ollama
+    cryptography
+    torchvision
+
+The complete dependency list is available in:
+
+`Backend/requirements.txt`
+
+---
+
+# 📂 Project Structure
+
+    PaddyBot/
+    │
+    ├── Backend/
+    │   │
+    │   ├── app.py
+    │   ├── chatbot.py
+    │   ├── chroma_db.py
+    │   ├── config.py
+    │   ├── embeddings.py
+    │   ├── frontend_app.py
+    │   ├── ingest.py
+    │   ├── llm.py
+    │   ├── loaders.py
+    │   ├── prompt.py
+    │   ├── requirements.txt
+    │   ├── retriever.py
+    │   ├── splitter.py
+    │   ├── vectordb.py
+    │   │
+    │   └── evaluation/
+    │       ├── evaluator.py
+    │       ├── metrics.py
+    │       ├── questions.json
+    │       ├── ground_truth.json
+    │       ├── compare_models.py
+    │       ├── create_pool.py
+    │       ├── generate_results.py
+    │       ├── pooled_annotation_final.csv
+    │       ├── retrieval_results_manual.csv
+    │       └── evaluation result CSV files
+    │
+    ├── Knowledge_Basis/
+    │
+    ├── Papers/
+    │
+    ├── .gitignore
+    ├── README.md
+    └── LICENSE
+
+---
+
+# ⚙️ Installation
+
+## 1. Clone the Repository
+
+    git clone https://github.com/YOUR_USERNAME/PaddyBot.git
+    cd PaddyBot
+
+Replace `YOUR_USERNAME` with the GitHub username associated with the repository.
+
+---
+
+## 2. Create a Virtual Environment
+
+### Windows
+
+    python -m venv venv
+
+Activate the environment:
+
+    venv\Scripts\activate
+
+### Linux / macOS
+
+    python3 -m venv venv
+    source venv/bin/activate
+
+---
+
+## 3. Install Dependencies
+
+From the project root:
+
+    pip install -r Backend/requirements.txt
+
+---
+
+# 🤖 Ollama Setup
+
+PaddyBot uses Ollama for local LLM inference.
+
+Install Ollama on the system and make sure the required language model is available locally.
+
+The LLM configuration used by PaddyBot is defined in:
+
+`Backend/llm.py`
+
+The exact model can therefore be configured according to the local deployment environment.
+
+---
+
+# 📚 Knowledge Base Setup
+
+PaddyBot uses a collection of agricultural PDF documents as its knowledge base.
+
+The knowledge base covers topics including:
+
+- Cultivation
+- Diseases
+- Fertilizers
+- Irrigation
+- Pests
+- Rice Varieties
+- Weed Management
+- Government Agricultural Schemes
+
+Place the required agricultural PDF documents in the configured knowledge-base directory before running the ingestion process.
+
+---
+
+# 🗄️ Building the Vector Database
+
+After preparing the knowledge base, run:
+
+    cd Backend
+    python ingest.py
+
+The ingestion pipeline:
+
+1. Loads the agricultural PDF documents.
+2. Splits the documents into smaller chunks.
+3. Generates embeddings.
+4. Builds the FAISS vector database.
+5. Saves the resulting vector index locally.
+
+The generated vector database is intentionally excluded from version control because it can be recreated from the source documents.
+
+---
+
+# ▶️ Running PaddyBot
+
+## Streamlit Application
+
+From the `Backend` directory:
+
+    streamlit run frontend_app.py
+
+The Streamlit application provides an interactive conversational interface for asking questions about paddy cultivation.
+
+---
+
+## Command-Line Application
+
+PaddyBot can also be used through the command line.
+
+From the `Backend` directory:
+
+    python app.py
+
+The application accepts questions interactively:
+
+    Ask a question (or type 'exit'):
+
+The generated answer and the retrieved source documents are displayed in the terminal.
+
+---
+
+# 💬 Example Questions
+
+Users can ask questions such as:
+
+    What are the symptoms of blast disease?
+
+    How often should I irrigate my paddy field?
+
+    Which fertilizer is best during the tillering stage?
+
+    How do I control brown planthopper?
+
+    What are the major diseases affecting rice?
+
+    What nutrients are required during different stages of rice cultivation?
+
+    How can weeds be managed in a paddy field?
+
+---
+
+# 🧪 Retrieval Evaluation
+
+A benchmark consisting of 100 agricultural questions is used to evaluate document retrieval performance.
+
+The benchmark contains questions from five agricultural domains:
+
+| Category | Questions |
+|---|---:|
+| General Cultivation | 20 |
+| Disease Management | 20 |
+| Pest Management | 20 |
+| Nutrient Management | 20 |
+| Irrigation and Water Management | 20 |
+| **Total** | **100** |
+
+The evaluation framework records the documents retrieved for each question and evaluates retrieval quality.
+
+---
+
+# 📊 Evaluation Metrics
+
+The retrieval evaluation uses metrics including:
+
+- Precision@K
+- Recall@K
+- Reciprocal Rank
+
+The evaluation implementation is available in:
+
+`Backend/evaluation/metrics.py`
+
+The benchmark questions are stored in:
+
+`Backend/evaluation/questions.json`
+
+Ground-truth information is stored in:
+
+`Backend/evaluation/ground_truth.json`
+
+---
+
+# 🧠 Embedding Model Comparison
+
+The project evaluates multiple embedding models to investigate their retrieval performance for the agricultural knowledge base.
+
+The evaluated models are:
+
+1. `sentence-transformers/all-MiniLM-L6-v2`
+2. `BAAI/bge-base-en-v1.5`
+3. `intfloat/e5-base-v2`
+4. `jinaai/jina-embeddings-v2-base-en`
+
+The evaluation results are stored in:
+
+`Backend/evaluation/`
+
+---
+
+# 🗄️ FAISS and Chroma Comparison
+
+The evaluation framework compares two vector database approaches:
+
+- FAISS
+- Chroma
+
+The main PaddyBot application currently uses FAISS as its vector retrieval backend.
+
+Chroma is implemented as an alternative vector database for comparative evaluation.
+
+The comparison investigates retrieval performance across different embedding models and vector database configurations.
+
+---
+
+# ⏱️ Retrieval Time Evaluation
+
+The evaluation framework also measures retrieval time.
+
+For each benchmark question, the similarity-search operation is timed independently.
+
+The average retrieval time is then calculated across the benchmark questions.
+
+This allows the system to compare not only retrieval quality but also retrieval efficiency across different embedding models and vector database configurations.
+
+---
+
+# 📈 Research Results
+
+The repository contains the retrieval evaluation results generated during the experiments.
+
+The evaluation files include results for:
+
+- FAISS + all-MiniLM-L6-v2
+- FAISS + BGE
+- FAISS + E5
+- FAISS + Jina
+- Chroma + all-MiniLM-L6-v2
+- Chroma + BGE
+- Chroma + E5
+- Chroma + Jina
+
+The corresponding CSV files are available under:
+
+`Backend/evaluation/`
+
+These files can be used for further analysis and reproduction of the reported retrieval experiments.
+
+---
+
+# 🖼️ Project Visualizations
+
+The project can include figures such as:
+
+- `architecture.png`
+- `faiss_performance.png`
+- `faiss_chroma_comparison.png`
+
+### Architecture
+
+The architecture diagram illustrates the complete PaddyBot RAG pipeline from agricultural documents through retrieval and LLM-based response generation.
+
+### FAISS Performance
+
+The FAISS performance visualization compares retrieval performance across the evaluated embedding models.
+
+### FAISS vs Chroma
+
+The FAISS-Chroma comparison visualization presents the retrieval performance of the two vector database approaches.
+
+---
+
+# 🔬 Research Contribution
+
+PaddyBot combines retrieval-augmented generation with agricultural knowledge retrieval to provide a domain-focused conversational assistant for paddy cultivation.
+
+The research component investigates the effect of different embedding models and vector database implementations on retrieval quality and retrieval efficiency.
+
+The evaluation uses a manually constructed agricultural benchmark covering multiple domains of rice cultivation.
+
+---
+
+# 🔐 Knowledge Base and Copyright
+
+The agricultural source documents used to construct the knowledge base may be subject to their respective copyright and redistribution conditions.
+
+Therefore, the repository does not necessarily redistribute all source PDF documents.
+
+Users should obtain the relevant source documents independently and place them in the configured knowledge-base directory before running the ingestion pipeline.
+
+---
+
+# 🚀 Future Work
+
+Future development will focus on:
+
+- Deployment of PaddyBot as a publicly accessible agricultural assistance system.
+- Expansion of the agricultural knowledge base.
+- Support for additional crops and regional agricultural practices.
+- Evaluation of additional embedding models.
+- Investigation of hybrid retrieval approaches.
+- Improvement of retrieval and response latency.
+- Integration of more advanced agricultural decision-support features.
+- Deployment of the system on scalable cloud infrastructure.
+- Expansion of the system to support multilingual agricultural assistance.
+---
+
+This project is intended for academic and research purposes.
+
+Please refer to the licenses and usage conditions of the individual software frameworks, models, datasets, and agricultural source documents used by the project.
