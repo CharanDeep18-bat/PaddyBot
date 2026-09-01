@@ -1,0 +1,15 @@
+streamlit
+langchain
+langchain-community
+langchain-classic
+langchain-text-splitters
+langchain-huggingface
+langchain-ollama
+sentence-transformers
+faiss-cpu
+chromadb
+pypdf
+ollama
+cryptography
+torchvision
+

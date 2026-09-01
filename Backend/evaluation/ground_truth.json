@@ -1,0 +1,86 @@
+[
+    {
+        "id": 1,
+        "relevant_documents": [
+            "2-6-Diseases-of-Rice.pdf",
+            "irri_diseases.pdf",
+            "PPATH-211.pdf"
+        ]
+    },
+    {
+        "id": 2,
+        "relevant_documents": [
+            "2-6-Diseases-of-Rice.pdf",
+            "irri_diseases.pdf",
+            "PPATH-211.pdf"
+        ]
+    },
+    {
+        "id": 3,
+        "relevant_documents": [
+            "2-6-Diseases-of-Rice.pdf",
+            "irri_diseases.pdf",
+            "PPATH-211.pdf"
+        ]
+    },
+    {
+        "id": 4,
+        "relevant_documents": [
+            "1-FERTILIZING 00.pdf",
+            "352_INTEGRATED_RG.pdf",
+            "fertilizers.pdf",
+            "nutrient_management_manual.pdf"
+        ]
+    },
+    {
+        "id": 5,
+        "relevant_documents": [
+            "nutrient_management_manual.pdf",
+            "fertilizers.pdf",
+            "1-FERTILIZING 00.pdf",
+            "352_INTEGRATED_RG.pdf"
+        ]
+    },
+    {
+        "id": 6,
+        "relevant_documents": [
+            "cultivation_irri.pdf",
+            "manual_on_rice_cultivation.pdf",
+            "Rice.pdf",
+            "jircas_supplementary_irrigation_manual_for_rice_production_using_small_reservoirs.pdf",
+            "01_Rice.pdf"
+        ]
+    },
+    {
+        "id": 7,
+        "relevant_documents": [
+            "Rice.pdf",
+            "9712200280_content.pdf",
+            "18MZO44E-U3.pdf"
+        ]
+    },
+    {
+        "id": 8,
+        "relevant_documents": [
+            "Weed_control.pdf",
+            "45.-Integrated-Weed-Management-in-Rice_English.pdf",
+            "Weed-management-in-rice-.pdf"
+        ]
+    },
+    {
+        "id": 9,
+        "relevant_documents": [
+            "01_Rice.pdf",
+            "manual_on_rice_cultivation.pdf"
+        ]
+    },
+    {
+        "id": 10,
+        "relevant_documents": [
+            "RB-34.pdf",
+            "Climate-resilient-rice-varieties-Swarna-Unnat-Dhan-and-Swarna-Sukha-Dhan.pdf",
+            "6c31c-varities-english",
+            "Industry_meet_ppt_Dr_LVSubbaRao.pdf"
+        ]
+    }
+]
