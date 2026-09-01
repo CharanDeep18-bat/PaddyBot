@@ -107,7 +107,7 @@ Generated Answer
 │
 ▼
 Streamlit UI
-
+```
 
 🔄 RAG Pipeline
 
